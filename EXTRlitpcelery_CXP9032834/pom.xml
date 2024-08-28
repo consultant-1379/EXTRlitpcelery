@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ericsson.nms.litp.3pps</groupId>
+    <artifactId>EXTRlitpcelery_CXP9032834</artifactId>
+    <packaging>${rpm.packaging}</packaging>
+    <name>[${project.artifactId}] RPM module</name>
+    <description>Celery 3.1.18 repackaged by Ericsson.</description>
+    <parent>
+        <groupId>com.ericsson.nms.litp.3pps</groupId>
+        <artifactId>EXTRlitpcelery</artifactId>
+        <version>2.3.1-SNAPSHOT</version>
+    </parent>
+    <properties>
+        <!-- publishes the rpm module to the ci portal -->
+        <publish_artifact>true</publish_artifact>
+    </properties>
+    <build>
+        <plugins>
+            <!-- TODO Use the factored config in the parent POM -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <inherited>true</inherited>
+                    <copyright>2012 Ericsson AB All rights reserved</copyright>
+                    <summary>${stripped.artifactId}</summary>
+                    <packager>${ericsson.rstate}</packager>
+                    <group>ERI-NMS</group>
+                    <requires>
+                        <require>python &gt;= 2.7</require>
+                        <require>pytz &gt;= 2010h</require>
+                        <require>EXTRlitppythonkombu_CXP9032839 &gt;= 1.0.1</require>
+                        <require>EXTRlitppythonbilliard_CXP9032837 &gt;= 1.0.1</require>
+                    </requires>
+                    <vendor>Ericsson AB</vendor>
+                    <url>www.ericsson.com</url>
+                    <defineStatements>
+                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                    </defineStatements>
+                    <defaultFilemode>0755</defaultFilemode>
+                    <defaultDirmode>0755</defaultDirmode>
+                    <defaultUsername>root</defaultUsername>
+                    <defaultGroupname>root</defaultGroupname>
+                    <mappings>
+                        <mapping>
+                            <directory>/</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/../../Builder/target/staging</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <!-- celery and celerybeat service unit files for systemd -->
+                            <directory>/usr/lib/systemd/system/</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <configuration>false</configuration>
+                            <filemode>644</filemode>
+                            <sources>
+                                <source>
+                                    <location>../usr/lib/systemd/system/celery.service</location>
+                                </source>
+                                <source>
+                                    <location>../usr/lib/systemd/system/celerybeat.service</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
